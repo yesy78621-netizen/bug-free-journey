@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import { Toaster } from 'react-hot-toast';
 import { WelcomeScreen } from './components/welcome/WelcomeScreen';
 import { Dashboard } from './components/dashboard/Dashboard';
-import { ThemeToggle } from './components/layout/ThemeToggle';
 import { useAppStore } from './store/useAppStore';
 import { authAPI } from './services/api';
 
@@ -26,8 +25,6 @@ function App() {
   return (
     <div className="min-h-screen transition-colors duration-300">
       {isAuthenticated ? <Dashboard /> : <WelcomeScreen />}
-      
-      <ThemeToggle />
       
       <Toaster
         position="top-right"
