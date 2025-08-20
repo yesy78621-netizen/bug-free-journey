@@ -38,10 +38,10 @@ export function Header() {
           
           <div>
             <h3 className="font-semibold text-gray-900 dark:text-white">
-              {user?.fullName || 'Kullanıcı'}
+              {user?.fullName || user?.username || 'Kullanıcı'}
             </h3>
             <p className="text-sm text-gray-600 dark:text-gray-400">
-              {user?.rank || 'Stajyer'} {user?.motto && `- ${user.motto}`}
+              {user?.rank || 'Stajyer'}
             </p>
           </div>
         </div>

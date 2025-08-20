@@ -4,7 +4,7 @@ import { WelcomeScreen } from './components/welcome/WelcomeScreen';
 import { Dashboard } from './components/dashboard/Dashboard';
 import { ThemeToggle } from './components/layout/ThemeToggle';
 import { useAppStore } from './store/useAppStore';
-import { tohAPI } from './services/api';
+import { authAPI } from './services/api';
 
 function App() {
   const { theme, isAuthenticated, setUser, setAuthenticated } = useAppStore();
@@ -16,17 +16,10 @@ function App() {
 
   useEffect(() => {
     // Check for existing session
-    const token = localStorage.getItem('toh_token');
-    if (token) {
-      tohAPI.getCurrentUser()
-        .then(user => {
-          setUser(user);
-          setAuthenticated(true);
-        })
-        .catch(() => {
-          // Token invalid, remove it
-          localStorage.removeItem('toh_token');
-        });
+    const user = authAPI.getCurrentUser();
+    if (user) {
+      setUser(user);
+      setAuthenticated(true);
     }
   }, [setUser, setAuthenticated]);
 

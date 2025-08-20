@@ -137,7 +137,7 @@ export function DashboardHome() {
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-3xl font-bold mb-2">
-                Hoş geldin, {user?.fullName || 'Komutan'}! 👋
+                Hoş geldin, {user?.fullName || user?.username || 'Komutan'}! 👋
               </h1>
               <p className="text-primary-100 text-lg">
                 TÖH Yönetim Sistemine hoş geldin. Bugün nasıl bir fark yaratacaksın?

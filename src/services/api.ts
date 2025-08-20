@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { localAuthService } from './authService';
 
 const API_BASE_URL = 'https://api.toh.com/api/v1'; // Gerçek API URL'ini buraya koy
 const DISCORD_WEBHOOK_URL = 'https://discord.com/api/webhooks/1395886160248574084/FMhfMB2C1cZvlNYlfbeczZpg5FRtxgvA10gjxYtuhpuStIpr9EhDcQVxbNMhlayTqsSK';
@@ -20,64 +21,27 @@ apiClient.interceptors.request.use((config) => {
 // TÖH API Service
 export const tohAPI = {
   async login(username: string, password: string) {
-    try {
-      const formData = new FormData();
-      formData.append('username', username);
-      formData.append('password', password);
-
-      const response = await axios.post(`${API_BASE_URL}/auth/login`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
-
-      if (response.data.success === 1) {
-        localStorage.setItem('toh_token', response.data.token);
-        return response.data;
-      } else {
-        throw new Error('Giriş başarısız');
-      }
-    } catch (error: any) {
-      console.error('Login Error:', error);
-      throw new Error(error.response?.data?.message || 'Giriş yapılamadı');
-    }
+    return await localAuthService.login({ username, password });
   },
 
   async getCurrentUser() {
-    try {
-      const response = await apiClient.get('/users/me');
-      return response.data;
-    } catch (error: any) {
-      console.error('Get Current User Error:', error);
-      throw new Error('Kullanıcı bilgileri alınamadı');
-    }
+    return localAuthService.getCurrentUser();
   },
 
   async getUserInfo(username: string) {
-    try {
-      const response = await apiClient.get(`/users/${username}`);
-      return response.data;
-    } catch (error: any) {
-      console.error('Get User Info Error:', error);
-      throw new Error('Kullanıcı bulunamadı');
-    }
+    return await localAuthService.getUserInfo(username);
   },
 
   async getArchive(type: 'mr' | 'badge', date?: string) {
-    try {
-      const params = new URLSearchParams({ type });
-      if (date) params.append('date', date);
-      
-      const response = await apiClient.post(`/archive/?${params.toString()}`);
-      return response.data;
-    } catch (error: any) {
-      console.error('Archive Error:', error);
-      throw new Error('Arşiv verisi alınamadı');
-    }
+    return await localAuthService.getArchive(type, date);
   },
 
   logout() {
-    localStorage.removeItem('toh_token');
+    localAuthService.logout();
+  },
+
+  async register(data: any) {
+    return await localAuthService.register(data);
   }
 };
 
@@ -142,9 +106,11 @@ export const authAPI = {
     return await tohAPI.login(username, password);
   },
 
+  async register(data: any) {
+    return await tohAPI.register(data);
+  },
   getCurrentUser() {
-    const token = localStorage.getItem('toh_token');
-    return token ? { token } : null;
+    return localAuthService.getCurrentUser();
   },
 
   logout() {
